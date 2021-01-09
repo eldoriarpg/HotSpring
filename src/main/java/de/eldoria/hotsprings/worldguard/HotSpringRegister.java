@@ -1,4 +1,4 @@
-package de.eldoria.hotsprings;
+package de.eldoria.hotsprings.worldguard;
 
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.messages.MessageType;
