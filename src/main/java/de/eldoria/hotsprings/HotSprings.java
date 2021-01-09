@@ -12,6 +12,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HotSprings extends EldoPlugin {
 
@@ -21,6 +22,10 @@ public class HotSprings extends EldoPlugin {
     private HotSpringFlag hotSpringFlag;
     private HotSpringRegister hotSpringRegister;
     private HotSpringTicker hotSpringTicker;
+
+    public static Logger logger() {
+        return getInstance(HotSprings.class).getLogger();
+    }
 
     @Override
     public void onLoad() {
@@ -33,17 +38,14 @@ public class HotSprings extends EldoPlugin {
             configuration = new Configuration(this);
             setupWorldGuard();
             setupEconomy();
-            initialized = true;
             hotSpringTicker = new HotSpringTicker(hotSpringRegister, economy, configuration, configuration.getLimits());
-            int interval = configuration.getSpringSettings().getInterval() * 20;
-            hotSpringTicker.runTaskTimer(this, interval, interval);
+            initialized = true;
         } else {
-            int interval = configuration.getSpringSettings().getInterval() * 20;
             hotSpringTicker.cancel();
-            hotSpringTicker.runTaskTimer(this, interval, interval);
             configuration.reload();
         }
-
+        int interval = configuration.getSpringSettings().getInterval() * 20;
+        hotSpringTicker.runTaskTimer(this, interval, interval);
     }
 
     public void registerFlag() {
@@ -57,25 +59,30 @@ public class HotSprings extends EldoPlugin {
             getLogger().log(Level.SEVERE, "Could not register flag. Flag Conflict.", e);
             getPluginManager().disablePlugin(this);
         }
+        getLogger().info("World Guard Flag registered.");
     }
 
     public void setupWorldGuard() {
         hotSpringRegister = new HotSpringRegister(configuration, this);
         WorldGuard.getInstance().getPlatform().getSessionManager()
                 .registerHandler(new HotSpringFlagHandler.Factory(hotSpringFlag, hotSpringRegister), null);
+        getLogger().info("HotSpring Flag Handler initialized. Hook into World Guard successful.");
     }
 
     public boolean setupEconomy() {
         if (!getPluginManager().isPluginEnabled("Vault")) {
+            getLogger().info("Vault is not installed. Economy Service not available.");
             return false;
         }
         RegisteredServiceProvider<Economy> economy = getServer().getServicesManager().getRegistration(Economy.class);
 
         if (economy == null) {
+            getLogger().info("Failed to hook into vault. Economy Service not available.");
             return false;
         }
         this.economy = economy.getProvider();
         assert this.economy != null;
+        getLogger().info("Hooked into vault successfully.");
         return true;
     }
 }
