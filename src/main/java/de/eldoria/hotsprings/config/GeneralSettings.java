@@ -1,5 +1,6 @@
 package de.eldoria.hotsprings.config;
 
+import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.Map;
 @Getter
 @SerializableAs("hotSpringGeneralSettings")
 public class GeneralSettings implements ConfigurationSerializable {
-    private MessageMode messageMode = MessageMode.SUBTITLE;
+    private String messageMode = "SUBTITLE";
     private Sound recieveSound = Sound.ENTITY_PUFFER_FISH_BLOW_UP;
 
     public GeneralSettings() {
@@ -21,8 +22,12 @@ public class GeneralSettings implements ConfigurationSerializable {
 
     public GeneralSettings(Map<String, Object> objectMap) {
         TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
-        messageMode = map.getValueOrDefault("messageMode", messageMode, MessageMode.class);
+        messageMode = map.getValueOrDefault("messageMode", messageMode);
         recieveSound = map.getValueOrDefault("receiveSound", recieveSound, Sound.class);
+    }
+
+    public MessageChannel getMessageMode() {
+        return MessageChannel.getChannelByNameOrDefault(messageMode);
     }
 
     @Override
