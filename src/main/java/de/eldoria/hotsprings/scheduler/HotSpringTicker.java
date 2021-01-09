@@ -1,10 +1,10 @@
 package de.eldoria.hotsprings.scheduler;
 
+import de.eldoria.eldoutilities.EldoUtilities;
 import de.eldoria.eldoutilities.localization.Replacement;
 import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.messages.MessageType;
-import de.eldoria.hotsprings.HotSpringRegister;
 import de.eldoria.hotsprings.HotSprings;
 import de.eldoria.hotsprings.config.Configuration;
 import de.eldoria.hotsprings.config.HotSpring;
@@ -12,10 +12,12 @@ import de.eldoria.hotsprings.config.Limit;
 import de.eldoria.hotsprings.config.LimitType;
 import de.eldoria.hotsprings.config.Limits;
 import de.eldoria.hotsprings.config.SpringSettings;
+import de.eldoria.hotsprings.worldguard.HotSpringRegister;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.SoundCategory;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -64,25 +66,28 @@ public class HotSpringTicker extends BukkitRunnable {
             Limit limit = hotSpring.getLimit();
             Limit playerLimit = limits.applyLimit(player, limit);
 
-
-            if (!playerLimit.canReceive(LimitType.INTERVAL, springSettings)) {
-                sender.sendMessage(player, "limit.interval");
-                return;
-            }
-
             List<String> messages = new ArrayList<>();
             List<Replacement> replacements = new ArrayList<>();
 
-            for (String command : hotSpring.getCommands()) {
-                String replace = command.replace("%player%", player.getName());
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replace);
+            if (playerLimit.canReceive(LimitType.INTERVAL, springSettings)) {
+                ConsoleCommandSender sender = Bukkit.getConsoleSender();
+                for (String command : hotSpring.getCommands()) {
+                    String replace = command.replace("%player%", player.getName());
+                    Bukkit.dispatchCommand(sender, replace);
+                }
+                if (!hotSpring.getCommands().isEmpty()) {
+                    messages.add("$granted.interval$");
+                }
+            } else {
+                messages.add("$limit.interval$");
             }
+
 
             replacements.add(Replacement.create("PLAYER", player));
             if (playerLimit.canReceive(LimitType.MONEY, springSettings) && economy != null) {
                 economy.depositPlayer(player, hotSpring.getMoney());
                 messages.add("$granted.money$");
-                replacements.add(Replacement.create("MONEY", economy.format(hotSpring.getMoney())));
+                replacements.add(Replacement.create("MONEY", economy.format(hotSpring.getMoney()), 'b'));
             } else if (economy != null) {
                 messages.add("$limit.money$");
             }
@@ -91,13 +96,19 @@ public class HotSpringTicker extends BukkitRunnable {
             if (playerLimit.canReceive(LimitType.EXPERIENCE, springSettings)) {
                 player.giveExp(hotSpring.getExperience());
                 messages.add("$granted.experience$");
-                replacements.add(Replacement.create("EXPERIENCE", hotSpring.getExperience()));
+                replacements.add(Replacement.create("EXPERIENCE", hotSpring.getExperience(), 'b'));
             } else {
                 messages.add("$limit.experience$");
             }
 
-            sender.sendLocalized(messageChannel, MessageType.NORMAL, player,
-                    String.join("\n", messages), replacements.toArray(new Replacement[0]));
+            Replacement[] repl = replacements.toArray(new Replacement[0]);
+            for (int i = 0; i < messages.size(); i++) {
+                String message = messages.get(i);
+                EldoUtilities.getDelayedActions().schedule(() -> {
+                    sender.sendLocalized(messageChannel, MessageType.NORMAL, player,
+                            message, repl);
+                }, i * 20 * 10);
+            }
 
             player.playSound(player.getLocation(), configuration.getSettings().getRecieveSound(), SoundCategory.AMBIENT, 1, 1);
         }
