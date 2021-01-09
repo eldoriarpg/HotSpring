@@ -43,10 +43,17 @@ public class Configuration extends EldoConfig {
         springs.clear();
         List<HotSpring> springs = (List<HotSpring>) getConfig().getList("springs", new ArrayList<HotSpring>());
         assert springs != null;
-        springs.forEach(s -> this.springs.put(s.getName().toLowerCase(), s));
-        settings = getConfig().getObject("settings", GeneralSettings.class);
-        springSettings = getConfig().getObject("springSettings", SpringSettings.class);
-        limits = getLimitsFile().getObject("limits", Limits.class);
+        springs.forEach(this::registerHotSpring);
+        if (springs.isEmpty()) {
+            springs.add(HotSpring.DEFAULT);
+        }
+        settings = getConfig().getObject("settings", GeneralSettings.class, new GeneralSettings());
+        springSettings = getConfig().getObject("springSettings", SpringSettings.class, new SpringSettings());
+        limits = getLimitsFile().getObject("limits", Limits.class, new Limits());
+    }
+
+    public void registerHotSpring(HotSpring spring) {
+        springs.put(spring.getName().toLowerCase(), spring);
     }
 
     public HotSpring getHotSpring(String name) {
