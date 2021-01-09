@@ -9,7 +9,7 @@ import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
-import de.eldoria.hotsprings.HotSpringRegister;
+import de.eldoria.hotsprings.worldguard.HotSpringRegister;
 import de.eldoria.hotsprings.worldguard.HotSpringFlag;
 
 public class HotSpringFlagHandler extends FlagValueChangeHandler<String> {
@@ -23,7 +23,9 @@ public class HotSpringFlagHandler extends FlagValueChangeHandler<String> {
 
     @Override
     protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, String value) {
-
+        if(value != null){
+            register.registerPlayer(BukkitAdapter.adapt(player), value);
+        }
     }
 
     @Override
