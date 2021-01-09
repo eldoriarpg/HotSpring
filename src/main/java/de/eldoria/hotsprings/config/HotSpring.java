@@ -17,7 +17,7 @@ public class HotSpring implements ConfigurationSerializable {
 
     public static final HotSpring DEFAULT = new HotSpring("default");
 
-    private String name;
+    private final String name;
     private int money = 10;
     private int experience = 10;
     private List<String> commands = new ArrayList<>();
