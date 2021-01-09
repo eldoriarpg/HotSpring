@@ -7,6 +7,9 @@ website: ${project.url}
 api-version: 1.13
 depend:
   - EldoUtilities
+  - WorldGuard
+softdepend:
+  - Vault
 
 commands:
   hotsprings:
