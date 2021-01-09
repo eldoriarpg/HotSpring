@@ -1,7 +1,9 @@
 package de.eldoria.hotsprings.scheduler;
 
 import de.eldoria.eldoutilities.localization.Replacement;
+import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
+import de.eldoria.eldoutilities.messages.MessageType;
 import de.eldoria.hotsprings.HotSpringRegister;
 import de.eldoria.hotsprings.HotSprings;
 import de.eldoria.hotsprings.config.Configuration;
@@ -38,6 +40,8 @@ public class HotSpringTicker extends BukkitRunnable {
 
     @Override
     public void run() {
+        MessageChannel messageChannel = configuration.getSettings().getMessageMode();
+
         for (Map.Entry<Player, HotSpring> springEntry : register.getActiveHotSprings().entrySet()) {
             Player player = springEntry.getKey();
             HotSpring hotSpring = springEntry.getValue();
@@ -62,7 +66,7 @@ public class HotSpringTicker extends BukkitRunnable {
 
 
             if (!playerLimit.canReceive(LimitType.INTERVAL, springSettings)) {
-                sendMessage(player, "limit.interval");
+                sender.sendMessage(player, "limit.interval");
                 return;
             }
 
@@ -75,13 +79,11 @@ public class HotSpringTicker extends BukkitRunnable {
             }
 
             replacements.add(Replacement.create("PLAYER", player));
-            if (playerLimit.canReceive(LimitType.MONEY, springSettings)) {
-                if (economy != null) {
-                    economy.depositPlayer(player, hotSpring.getMoney());
-                    messages.add("$granted.money$");
-                    replacements.add(Replacement.create("MONEY", economy.format(hotSpring.getMoney())));
-                }
-            } else {
+            if (playerLimit.canReceive(LimitType.MONEY, springSettings) && economy != null) {
+                economy.depositPlayer(player, hotSpring.getMoney());
+                messages.add("$granted.money$");
+                replacements.add(Replacement.create("MONEY", economy.format(hotSpring.getMoney())));
+            } else if (economy != null) {
                 messages.add("$limit.money$");
             }
 
@@ -94,27 +96,12 @@ public class HotSpringTicker extends BukkitRunnable {
                 messages.add("$limit.experience$");
             }
 
-            sendMessage(player, String.join("\n", messages), replacements.toArray(new Replacement[0]));
+            sender.sendLocalized(messageChannel, MessageType.NORMAL, player,
+                    String.join("\n", messages), replacements.toArray(new Replacement[0]));
+
             player.playSound(player.getLocation(), configuration.getSettings().getRecieveSound(), SoundCategory.AMBIENT, 1, 1);
         }
 
         configuration.save();
-    }
-
-    private void sendMessage(Player player, String message, Replacement... replacements) {
-        switch (configuration.getSettings().getMessageMode()) {
-            case TITLE:
-                sender.sendLocalizedTitle(player, "2", message, "", 20, 50, 10, replacements);
-                break;
-            case SUBTITLE:
-                sender.sendLocalizedTitle(player, "2", "", message, 20, 50, 10, replacements);
-                break;
-            case CHAT:
-                sender.sendLocalizedMessage(player, message, replacements);
-                break;
-            case ACTION_BAR:
-                sender.sendLocalizedActionBar(player, message, replacements);
-                break;
-        }
     }
 }
