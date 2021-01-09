@@ -3,12 +3,22 @@ package de.eldoria.hotsprings;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
+import de.eldoria.eldoutilities.localization.ILocalizer;
+import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
+import de.eldoria.hotsprings.commands.HotSpringCommand;
 import de.eldoria.hotsprings.config.Configuration;
+import de.eldoria.hotsprings.config.GeneralSettings;
+import de.eldoria.hotsprings.config.HotSpring;
+import de.eldoria.hotsprings.config.Limit;
+import de.eldoria.hotsprings.config.Limits;
+import de.eldoria.hotsprings.config.SpringSettings;
 import de.eldoria.hotsprings.listener.HotSpringFlagHandler;
 import de.eldoria.hotsprings.scheduler.HotSpringTicker;
 import de.eldoria.hotsprings.worldguard.HotSpringFlag;
+import de.eldoria.hotsprings.worldguard.HotSpringRegister;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.logging.Level;
@@ -29,27 +39,40 @@ public class HotSprings extends EldoPlugin {
 
     @Override
     public void onLoad() {
+        registerConfig();
+        configuration = new Configuration(this);
         registerFlag();
+    }
+
+    private void registerConfig() {
+        ConfigurationSerialization.registerClass(GeneralSettings.class);
+        ConfigurationSerialization.registerClass(HotSpring.class);
+        ConfigurationSerialization.registerClass(Limit.class);
+        ConfigurationSerialization.registerClass(Limits.class);
+        ConfigurationSerialization.registerClass(SpringSettings.class);
     }
 
     @Override
     public void onEnable() {
         if (!initialized) {
-            configuration = new Configuration(this);
+            ILocalizer localizer = ILocalizer.create(this, "de_DE", "en_US");
+            localizer.setLocale(configuration.getLanguage());
+            MessageSender.create(this, "§6[§cH§3S§6] ", '2', 'c');
             setupWorldGuard();
             setupEconomy();
-            hotSpringTicker = new HotSpringTicker(hotSpringRegister, economy, configuration, configuration.getLimits());
+            registerCommand("hotsprings", new HotSpringCommand(this, configuration));
             initialized = true;
         } else {
             hotSpringTicker.cancel();
             configuration.reload();
         }
+        hotSpringTicker = new HotSpringTicker(hotSpringRegister, economy, configuration, configuration.getLimits());
         int interval = configuration.getSpringSettings().getInterval() * 20;
         hotSpringTicker.runTaskTimer(this, interval, interval);
     }
 
     public void registerFlag() {
-        HotSpringFlag hotSpringFlag = new HotSpringFlag(configuration);
+        hotSpringFlag = new HotSpringFlag(configuration);
         FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
         try {
             registry.register(hotSpringFlag);

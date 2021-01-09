@@ -2,6 +2,7 @@ package de.eldoria.hotsprings.config;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
+import lombok.Data;
 import lombok.Getter;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Getter
+@Data
 @SerializableAs("hotSpringsHotSpring")
 public class HotSpring implements ConfigurationSerializable {
 
