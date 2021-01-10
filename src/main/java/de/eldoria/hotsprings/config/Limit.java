@@ -50,13 +50,13 @@ public class Limit implements ConfigurationSerializable {
         int multi = 0;
         switch (limitType) {
             case EXPERIENCE:
-                multi = PermUtil.findHighestIntPermission(player, Permissions.EXPERIENCE_LIMIT_MULTI,1);
+                multi = PermUtil.findHighestIntPermission(player, Permissions.EXPERIENCE_LIMIT_MULTI, 1);
                 return expLimit <= settings.getMaxExperience() * multi;
             case MONEY:
-                multi = PermUtil.findHighestIntPermission(player, Permissions.MONEY_LIMIT_MULTI,1);
+                multi = PermUtil.findHighestIntPermission(player, Permissions.MONEY_LIMIT_MULTI, 1);
                 return moneyLimit <= settings.getMaxMoney();
             case INTERVAL:
-                multi = PermUtil.findHighestIntPermission(player, Permissions.INTERVAL_LIMIT_MULTI,1);
+                multi = PermUtil.findHighestIntPermission(player, Permissions.INTERVAL_LIMIT_MULTI, 1);
                 return intervalLimit <= settings.getMaxIntervals();
         }
         return true;

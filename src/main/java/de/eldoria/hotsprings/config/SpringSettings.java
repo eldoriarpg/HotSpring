@@ -11,10 +11,10 @@ import java.util.Map;
 @SerializableAs("hotSpringSpringSettings")
 @Getter
 public class SpringSettings implements ConfigurationSerializable {
-    private int maxMoney = 5000;
-    private int maxExperience = 2000;
-    private int maxIntervals = 1000;
-    private int interval = 120;
+    private final int maxMoney = 5000;
+    private final int maxExperience = 2000;
+    private final int maxIntervals = 1000;
+    private final int interval = 120;
 
     public SpringSettings() {
     }

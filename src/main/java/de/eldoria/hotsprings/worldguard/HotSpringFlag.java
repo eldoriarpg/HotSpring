@@ -7,10 +7,7 @@ import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.localization.Replacement;
 import de.eldoria.hotsprings.HotSprings;
 import de.eldoria.hotsprings.config.Configuration;
-import de.eldoria.hotsprings.config.HotSpring;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.stream.Collectors;
 
 public class HotSpringFlag extends Flag<String> {
     private final Configuration configuration;

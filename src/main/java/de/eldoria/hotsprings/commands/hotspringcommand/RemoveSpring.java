@@ -26,7 +26,7 @@ public class RemoveSpring extends EldoCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(denyAccess(sender, Permissions.MANAGE_SPRINGS)){
+        if (denyAccess(sender, Permissions.MANAGE_SPRINGS)) {
             return true;
         }
 

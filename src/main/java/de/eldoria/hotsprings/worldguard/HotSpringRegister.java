@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HotSpringRegister {
+    protected final Configuration configuration;
+    protected final MessageSender sender;
     private final Map<Player, HotSpring> hotSprings = new HashMap<>();
     private final Plugin plugin;
 
@@ -42,7 +44,4 @@ public class HotSpringRegister {
         sender.sendLocalized(configuration.getSettings().getMessageMode(), MessageType.NORMAL, player,
                 "spring.leave");
     }
-
-    protected final Configuration configuration;
-    protected final MessageSender sender;
 }

@@ -14,8 +14,21 @@ import java.util.UUID;
 
 @SerializableAs("hotSpringLimits")
 public class Limits implements ConfigurationSerializable {
-    private int day = getCurrentDay();
     private final Map<UUID, Limit> limits = new HashMap<>();
+    private int day = getCurrentDay();
+
+    public Limits() {
+    }
+
+    public Limits(Map<String, Object> objectMap) {
+        TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
+        day = map.getValueOrDefault("day", getCurrentDay());
+        map.listToMap(limits, "limits", Limit::getUuid);
+    }
+
+    private static int getCurrentDay() {
+        return LocalDateTime.now().getDayOfWeek().getValue();
+    }
 
     public Limit applyLimit(Player player, Limit limit) {
         int dayOfWeek = getCurrentDay();
@@ -28,24 +41,11 @@ public class Limits implements ConfigurationSerializable {
         return currLimit;
     }
 
-    public Limits() {
-    }
-
-    public Limits(Map<String, Object> objectMap) {
-        TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
-        day = map.getValueOrDefault("day", getCurrentDay());
-        map.listToMap(limits ,"limits", Limit::getUuid);
-    }
-
     @Override
     public @NotNull Map<String, Object> serialize() {
         return SerializationUtil.newBuilder()
                 .add("day", day)
                 .add("limits", limits)
                 .build();
-    }
-
-    private static int getCurrentDay() {
-        return LocalDateTime.now().getDayOfWeek().getValue();
     }
 }

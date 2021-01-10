@@ -69,7 +69,7 @@ public class HotSprings extends EldoPlugin {
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
                     false, 10, ButlerUpdateData.HOST)).start();
             Metrics metrics = new Metrics(this, 9959);
-            if(metrics.isEnabled()){
+            if (metrics.isEnabled()) {
                 getLogger().info("§2Metrics enabled. Thank you <3");
             }
         } else {
