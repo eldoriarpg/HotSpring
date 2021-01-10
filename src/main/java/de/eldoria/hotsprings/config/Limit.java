@@ -2,9 +2,12 @@ package de.eldoria.hotsprings.config;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
+import de.eldoria.eldoutilities.utils.PermUtil;
+import de.eldoria.hotsprings.util.Permissions;
 import lombok.Data;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -32,9 +35,9 @@ public class Limit implements ConfigurationSerializable {
     public Limit(Map<String, Object> objectMap) {
         TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
         uuid = map.getValueOrDefault("uuid", new UUID(0, 0));
-        expLimit = map.getValueOrDefault("expLimit",expLimit);
-        moneyLimit = map.getValueOrDefault("moneyLimit",moneyLimit);
-        intervalLimit = map.getValueOrDefault("intervalLimit",intervalLimit);
+        expLimit = map.getValueOrDefault("expLimit", expLimit);
+        moneyLimit = map.getValueOrDefault("moneyLimit", moneyLimit);
+        intervalLimit = map.getValueOrDefault("intervalLimit", intervalLimit);
     }
 
     public void apply(Limit limit) {
@@ -43,13 +46,17 @@ public class Limit implements ConfigurationSerializable {
         intervalLimit += limit.intervalLimit;
     }
 
-    public boolean canReceive(LimitType limitType, SpringSettings settings) {
+    public boolean canReceive(Player player, LimitType limitType, SpringSettings settings) {
+        int multi = 0;
         switch (limitType) {
             case EXPERIENCE:
-                return expLimit <= settings.getMaxExperience();
+                multi = PermUtil.findHighestIntPermission(player, Permissions.EXPERIENCE_LIMIT_MULTI);
+                return expLimit <= settings.getMaxExperience() * multi;
             case MONEY:
+                multi = PermUtil.findHighestIntPermission(player, Permissions.MONEY_LIMIT_MULTI);
                 return moneyLimit <= settings.getMaxMoney();
             case INTERVAL:
+                multi = PermUtil.findHighestIntPermission(player, Permissions.INTERVAL_LIMIT_MULTI);
                 return intervalLimit <= settings.getMaxIntervals();
         }
         return true;

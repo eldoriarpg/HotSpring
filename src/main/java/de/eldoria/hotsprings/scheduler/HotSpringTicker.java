@@ -1,6 +1,6 @@
 package de.eldoria.hotsprings.scheduler;
 
-import de.eldoria.eldoutilities.EldoUtilities;
+import de.eldoria.eldoutilities.core.EldoUtilities;
 import de.eldoria.eldoutilities.localization.Replacement;
 import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
@@ -63,13 +63,13 @@ public class HotSpringTicker extends BukkitRunnable {
             }
 
 
-            Limit limit = hotSpring.getLimit();
+            Limit limit = hotSpring.getLimit(player);
             Limit playerLimit = limits.applyLimit(player, limit);
 
             List<String> messages = new ArrayList<>();
             List<Replacement> replacements = new ArrayList<>();
 
-            if (playerLimit.canReceive(LimitType.INTERVAL, springSettings)) {
+            if (playerLimit.canReceive(player, LimitType.INTERVAL, springSettings)) {
                 ConsoleCommandSender sender = Bukkit.getConsoleSender();
                 for (String command : hotSpring.getCommands()) {
                     String replace = command.replace("%player%", player.getName());
@@ -82,10 +82,9 @@ public class HotSpringTicker extends BukkitRunnable {
                 messages.add("$limit.interval$");
             }
 
-
             replacements.add(Replacement.create("PLAYER", player));
-            if (playerLimit.canReceive(LimitType.MONEY, springSettings) && economy != null) {
-                economy.depositPlayer(player, hotSpring.getMoney());
+            if (playerLimit.canReceive(player, LimitType.MONEY, springSettings) && economy != null) {
+                economy.depositPlayer(player, limit.getMoneyLimit());
                 messages.add("$granted.money$");
                 replacements.add(Replacement.create("MONEY", economy.format(hotSpring.getMoney()), 'b'));
             } else if (economy != null) {
@@ -93,8 +92,8 @@ public class HotSpringTicker extends BukkitRunnable {
             }
 
 
-            if (playerLimit.canReceive(LimitType.EXPERIENCE, springSettings)) {
-                player.giveExp(hotSpring.getExperience());
+            if (playerLimit.canReceive(player, LimitType.EXPERIENCE, springSettings)) {
+                player.giveExp(limit.getExpLimit());
                 messages.add("$granted.experience$");
                 replacements.add(Replacement.create("EXPERIENCE", hotSpring.getExperience(), 'b'));
             } else {

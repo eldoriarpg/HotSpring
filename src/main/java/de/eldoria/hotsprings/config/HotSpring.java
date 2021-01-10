@@ -2,10 +2,12 @@ package de.eldoria.hotsprings.config;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
+import de.eldoria.eldoutilities.utils.PermUtil;
+import de.eldoria.hotsprings.util.Permissions;
 import lombok.Data;
-import lombok.Getter;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -51,7 +53,9 @@ public class HotSpring implements ConfigurationSerializable {
                 .build();
     }
 
-    public Limit getLimit() {
-        return new Limit(experience, money);
+    public Limit getLimit(Player player) {
+        int expMulti = PermUtil.findHighestIntPermission(player, Permissions.EXPERIENCE_MULTI);
+        int moneyMulti = PermUtil.findHighestIntPermission(player, Permissions.MONEY_MULTI);
+        return new Limit(experience * expMulti, money * moneyMulti);
     }
 }
