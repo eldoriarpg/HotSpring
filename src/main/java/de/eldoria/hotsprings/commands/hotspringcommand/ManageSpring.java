@@ -14,6 +14,7 @@ import de.eldoria.eldoutilities.simplecommands.TabCompleteUtil;
 import de.eldoria.eldoutilities.utils.DataContainerUtil;
 import de.eldoria.hotsprings.config.Configuration;
 import de.eldoria.hotsprings.config.HotSpring;
+import de.eldoria.hotsprings.util.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -49,6 +50,10 @@ public class ManageSpring extends EldoCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if(denyAccess(sender, Permissions.MANAGE_SPRINGS)){
+            return true;
+        }
+
         if (argumentsInvalid(sender, args, 1, "<$syntax.springName$>")) {
             return true;
         }

@@ -6,6 +6,7 @@ import de.eldoria.eldoutilities.messages.MessageType;
 import de.eldoria.eldoutilities.simplecommands.EldoCommand;
 import de.eldoria.eldoutilities.simplecommands.TabCompleteUtil;
 import de.eldoria.hotsprings.config.Configuration;
+import de.eldoria.hotsprings.util.Permissions;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -25,6 +26,10 @@ public class RemoveSpring extends EldoCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if(denyAccess(sender, Permissions.MANAGE_SPRINGS)){
+            return true;
+        }
+
         if (argumentsInvalid(sender, args, 1, "<$syntax.springName$>")) {
             return true;
         }
