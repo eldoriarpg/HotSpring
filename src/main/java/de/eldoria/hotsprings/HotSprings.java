@@ -3,6 +3,7 @@ package de.eldoria.hotsprings;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
+import de.eldoria.eldoutilities.bstats.Metrics;
 import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
@@ -67,6 +68,10 @@ public class HotSprings extends EldoPlugin {
             initialized = true;
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
                     false, 10, ButlerUpdateData.HOST)).start();
+            Metrics metrics = new Metrics(this, 9959);
+            if(metrics.isEnabled()){
+                getLogger().info("§2Metrics enabled. Thank you <3");
+            }
         } else {
             hotSpringTicker.cancel();
             configuration.reload();
