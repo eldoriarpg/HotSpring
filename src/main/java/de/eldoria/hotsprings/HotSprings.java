@@ -6,6 +6,8 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
+import de.eldoria.eldoutilities.updater.Updater;
+import de.eldoria.eldoutilities.updater.butlerupdater.ButlerUpdateData;
 import de.eldoria.hotsprings.commands.HotSpringCommand;
 import de.eldoria.hotsprings.config.Configuration;
 import de.eldoria.hotsprings.config.GeneralSettings;
@@ -15,6 +17,7 @@ import de.eldoria.hotsprings.config.Limits;
 import de.eldoria.hotsprings.config.SpringSettings;
 import de.eldoria.hotsprings.listener.HotSpringFlagHandler;
 import de.eldoria.hotsprings.scheduler.HotSpringTicker;
+import de.eldoria.hotsprings.util.Permissions;
 import de.eldoria.hotsprings.worldguard.HotSpringFlag;
 import de.eldoria.hotsprings.worldguard.HotSpringRegister;
 import net.milkbowl.vault.economy.Economy;
@@ -62,6 +65,8 @@ public class HotSprings extends EldoPlugin {
             setupEconomy();
             registerCommand("hotsprings", new HotSpringCommand(this, configuration));
             initialized = true;
+            Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
+                    false, 10, ButlerUpdateData.HOST)).start();
         } else {
             hotSpringTicker.cancel();
             configuration.reload();

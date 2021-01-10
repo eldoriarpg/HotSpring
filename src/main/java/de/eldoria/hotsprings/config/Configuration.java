@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 public class Configuration extends EldoConfig {
     @Getter
+    private boolean updateCheck;
+    @Getter
     private GeneralSettings settings;
     private Map<String, HotSpring> springTypes;
     @Getter
@@ -39,6 +41,7 @@ public class Configuration extends EldoConfig {
 
     @Override
     protected void saveConfigs() {
+        getConfig().set("updateCheck", updateCheck);
         getConfig().set("language", language);
         getConfig().set("springTypes", new ArrayList<>(springTypes.values()));
         getConfig().set("springSettings", springSettings);
@@ -61,11 +64,13 @@ public class Configuration extends EldoConfig {
         springSettings = getConfig().getObject("springSettings", SpringSettings.class, new SpringSettings());
         limits = getLimitsFile().getObject("limits", Limits.class, new Limits());
         language = getConfig().getString("language", "en_US");
+        updateCheck = getConfig().getBoolean("updateCheck", true);
     }
 
     public void registerHotSpring(HotSpring spring) {
         springTypes.put(spring.getName().toLowerCase(), spring);
     }
+
     public void unregisterHotSpring(HotSpring spring) {
         springTypes.remove(spring.getName().toLowerCase());
     }
