@@ -54,8 +54,8 @@ public class HotSpring implements ConfigurationSerializable {
     }
 
     public Limit getLimit(Player player) {
-        int expMulti = PermUtil.findHighestIntPermission(player, Permissions.EXPERIENCE_MULTI);
-        int moneyMulti = PermUtil.findHighestIntPermission(player, Permissions.MONEY_MULTI);
+        int expMulti = PermUtil.findHighestIntPermission(player, Permissions.EXPERIENCE_MULTI, 1);
+        int moneyMulti = PermUtil.findHighestIntPermission(player, Permissions.MONEY_MULTI, 1);
         return new Limit(experience * expMulti, money * moneyMulti);
     }
 }
