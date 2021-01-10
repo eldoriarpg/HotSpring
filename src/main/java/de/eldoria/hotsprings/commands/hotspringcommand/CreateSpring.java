@@ -41,7 +41,7 @@ public class CreateSpring extends EldoCommand {
         }
 
         configuration.registerHotSpring(new HotSpring(args[0]));
-        messageSender().sendLocalized(MessageChannel.CHAT, MessageType.ERROR, sender, "message.springCreated",
+        messageSender().sendLocalized(MessageChannel.CHAT, MessageType.NORMAL, sender, "message.springCreated",
                 Replacement.create("NAME", args[0], 'b'));
         return true;
     }

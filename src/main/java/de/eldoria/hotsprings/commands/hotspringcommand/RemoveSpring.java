@@ -41,7 +41,7 @@ public class RemoveSpring extends EldoCommand {
         }
 
         configuration.unregisterHotSpring(configuration.getHotSpring(args[0]));
-        messageSender().sendLocalized(MessageChannel.CHAT, MessageType.ERROR, sender, "message.springDeleted",
+        messageSender().sendLocalized(MessageChannel.CHAT, MessageType.NORMAL, sender, "message.springDeleted",
                 Replacement.create("NAME", args[0], 'b'));
         return true;
     }
