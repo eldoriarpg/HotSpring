@@ -86,7 +86,7 @@ public class HotSpringTicker extends BukkitRunnable {
             if (playerLimit.canReceive(player, LimitType.MONEY, springSettings) && economy != null) {
                 economy.depositPlayer(player, limit.getMoneyLimit());
                 messages.add("$granted.money$");
-                replacements.add(Replacement.create("MONEY", economy.format(hotSpring.getMoney()), 'b'));
+                replacements.add(Replacement.create("MONEY", economy.format(limit.getMoneyLimit()), 'b'));
             } else if (economy != null) {
                 messages.add("$limit.money$");
             }
@@ -95,7 +95,7 @@ public class HotSpringTicker extends BukkitRunnable {
             if (playerLimit.canReceive(player, LimitType.EXPERIENCE, springSettings)) {
                 player.giveExp(limit.getExpLimit());
                 messages.add("$granted.experience$");
-                replacements.add(Replacement.create("EXPERIENCE", hotSpring.getExperience(), 'b'));
+                replacements.add(Replacement.create("EXPERIENCE", limit.getExpLimit(), 'b'));
             } else {
                 messages.add("$limit.experience$");
             }
