@@ -61,13 +61,13 @@ public class HotSprings extends EldoPlugin {
         if (!initialized) {
             ILocalizer localizer = ILocalizer.create(this, "de_DE", "en_US");
             localizer.setLocale(configuration.getLanguage());
-            MessageSender.create(this, "§6[§cH§3S§6] ", '2', 'c');
+            MessageSender.create(this, "§6[§cH§3S§6]");
             setupWorldGuard();
             setupEconomy();
             registerCommand("hotsprings", new HotSpringCommand(this, configuration));
             initialized = true;
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
-                    false, 10, ButlerUpdateData.HOST)).start();
+                    false, 20, ButlerUpdateData.HOST)).start();
             Metrics metrics = new Metrics(this, 9959);
             if (metrics.isEnabled()) {
                 getLogger().info("§2Metrics enabled. Thank you <3");
@@ -118,4 +118,11 @@ public class HotSprings extends EldoPlugin {
         getLogger().info("Hooked into vault successfully.");
         return true;
     }
+
+
+
+
+    
+
+
 }

@@ -1,8 +1,8 @@
 package de.eldoria.hotsprings.config;
 
+import de.eldoria.eldoutilities.permissions.PermUtil;
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
-import de.eldoria.eldoutilities.utils.PermUtil;
 import de.eldoria.hotsprings.util.Permissions;
 import lombok.Data;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

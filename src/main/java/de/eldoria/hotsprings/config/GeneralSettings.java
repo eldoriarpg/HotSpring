@@ -1,6 +1,7 @@
 package de.eldoria.hotsprings.config;
 
 import de.eldoria.eldoutilities.messages.MessageChannel;
+import de.eldoria.eldoutilities.messages.channeldata.ChannelData;
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class GeneralSettings implements ConfigurationSerializable {
         recieveSound = map.getValueOrDefault("receiveSound", recieveSound, Sound.class);
     }
 
-    public MessageChannel getMessageMode() {
+    public MessageChannel<? extends ChannelData> getMessageMode() {
         return MessageChannel.getChannelByNameOrDefault(messageMode);
     }
 

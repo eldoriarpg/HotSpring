@@ -2,6 +2,7 @@ package de.eldoria.hotsprings.util;
 
 public final class Permissions {
     public static final String BASE = "hotsprings.";
+    public static final String DEBUG = BASE + "debug";
     public static final String RELOAD = BASE + "reload";
     public static final String MANAGE_SPRINGS = BASE + "manageSprings";
     public static final String INTERVAL_LIMIT_MULTI = BASE + "limit.interval.";

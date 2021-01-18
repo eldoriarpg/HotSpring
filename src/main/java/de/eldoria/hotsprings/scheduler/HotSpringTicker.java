@@ -5,6 +5,7 @@ import de.eldoria.eldoutilities.localization.Replacement;
 import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.messages.MessageType;
+import de.eldoria.eldoutilities.messages.channeldata.ChannelData;
 import de.eldoria.hotsprings.HotSprings;
 import de.eldoria.hotsprings.config.Configuration;
 import de.eldoria.hotsprings.config.HotSpring;
@@ -20,6 +21,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.w3c.dom.CharacterData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class HotSpringTicker extends BukkitRunnable {
 
     @Override
     public void run() {
-        MessageChannel messageChannel = configuration.getSettings().getMessageMode();
+        MessageChannel<? extends ChannelData> messageChannel = configuration.getSettings().getMessageMode();
 
         for (Map.Entry<Player, HotSpring> springEntry : register.getActiveHotSprings().entrySet()) {
             Player player = springEntry.getKey();
@@ -54,12 +56,8 @@ public class HotSpringTicker extends BukkitRunnable {
             if (hotSpring.isRequireLava() && hotSpring.isRequireWater()) {
                 if (type != Material.LAVA && type != Material.WATER) continue;
             } else {
-                if (hotSpring.isRequireWater()) {
-                    if (type != Material.WATER) continue;
-                }
-                if (hotSpring.isRequireLava()) {
-                    if (type != Material.LAVA) continue;
-                }
+                if (hotSpring.isRequireWater() && type != Material.WATER ) continue;
+                if (hotSpring.isRequireLava() && type != Material.LAVA) continue;
             }
 
 
@@ -106,7 +104,7 @@ public class HotSpringTicker extends BukkitRunnable {
                 EldoUtilities.getDelayedActions().schedule(() -> {
                     sender.sendLocalized(messageChannel, MessageType.NORMAL, player,
                             message, repl);
-                }, i * 20 * 10);
+                }, i * 20 * 5);
             }
 
             player.playSound(player.getLocation(), configuration.getSettings().getRecieveSound(), SoundCategory.AMBIENT, 1, 1);

@@ -3,11 +3,13 @@ package de.eldoria.hotsprings.commands;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
 import de.eldoria.eldoutilities.simplecommands.EldoCommand;
 import de.eldoria.eldoutilities.simplecommands.commands.DefaultAbout;
+import de.eldoria.eldoutilities.simplecommands.commands.DefaultDebug;
 import de.eldoria.hotsprings.commands.hotspringcommand.CreateSpring;
 import de.eldoria.hotsprings.commands.hotspringcommand.ManageSpring;
 import de.eldoria.hotsprings.commands.hotspringcommand.Reload;
 import de.eldoria.hotsprings.commands.hotspringcommand.RemoveSpring;
 import de.eldoria.hotsprings.config.Configuration;
+import de.eldoria.hotsprings.util.Permissions;
 
 public class HotSpringCommand extends EldoCommand {
     public HotSpringCommand(EldoPlugin plugin, Configuration configuration) {
@@ -17,5 +19,6 @@ public class HotSpringCommand extends EldoCommand {
         registerCommand("manageSpring", new ManageSpring(plugin, configuration));
         registerCommand("createSpring", new CreateSpring(plugin, configuration));
         registerCommand("removeSpring", new RemoveSpring(plugin, configuration));
+        registerCommand("debug", new DefaultDebug(plugin, Permissions.DEBUG));
     }
 }
